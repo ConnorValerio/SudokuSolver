@@ -30,7 +30,8 @@ class Board():
 
             # fail safe to prevent infinite loop
             if(self.handle_fail_safe()):
-                print("FAILSAFE: The Sudoku puzzle cannot be solved logically.")
+                print("FAILSAFE: The Sudoku puzzle cannot be solved using the implemented logic.")
+                print("Beginning Brute Force (Depth First Search)...")
                 self.brute_force()
                 sys.exit()
                 return
@@ -58,7 +59,7 @@ class Board():
         # values 1-9
         for val in range(1, 10):
             if(not self.is_in_x(cell, row_neighbours, val) and
-                    not self.is_in_x(cell, col_neighbours, val) and
+               not self.is_in_x(cell, col_neighbours, val) and
                not self.is_in_x(cell, square_neighbours, val)):
                 cell.add_poss_val(val)
 
@@ -122,7 +123,10 @@ class Board():
     # returns true if no neighbour has the possible value
     def compare_to_neighbours(self, neighbours, val):
         for neighbour in neighbours:
-            # only compare with neighbours without values
+            # if neighbour has val
+            if(neighbour.get_val() == val):
+                return False
+            # comparing to neighbours without values
             if(neighbour.get_val() == 0):
                 neighbour_poss_vals = neighbour.get_poss_vals()
                 if(val in neighbour_poss_vals):
@@ -236,7 +240,6 @@ class Board():
             count += 1
 
     def brute_force(self):
-        print("Starting DFS Brute Force...")
 
         root = self
         stack = Stack()
@@ -244,10 +247,10 @@ class Board():
 
         while(not stack.isEmpty()):
 
-            # print("Stack size: {}".format(stack.size()))
+            print("Stack size: {}".format(stack.size()))
 
             current_board = stack.pop()
-            # current_board.printBoard()
+            current_board.printBoard()
 
             # if the goal state has been found
             if(current_board.is_complete_and_valid()):
