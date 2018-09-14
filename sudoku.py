@@ -46,7 +46,6 @@ row_8 = [0, 0, 0, 0, 0, 2, 0, 4, 3]
 row_9 = [0, 4, 0, 0, 8, 0, 0, 0, 9]
 
 """
-
 # Logically impossible, brute force only
 row_1 = [8, 0, 0, 0, 0, 0, 0, 0, 0]
 row_2 = [0, 0, 3, 6, 0, 0, 0, 0, 0]
@@ -57,7 +56,6 @@ row_6 = [0, 0, 0, 1, 0, 0, 0, 3, 0]
 row_7 = [0, 0, 1, 0, 0, 0, 0, 6, 8]
 row_8 = [0, 0, 8, 5, 0, 0, 0, 1, 0]
 row_9 = [0, 9, 0, 0, 0, 0, 4, 0, 0]
-
 
 # store values in list
 values = []
@@ -86,9 +84,9 @@ board.printBoard()
 board.solve()
 board.printBoard()
 
-"""
 print("Valid rows: ")
 print(board.has_valid_rows())
 print("Valid columns: ")
 print(board.has_valid_cols())
-"""
+print("Valid squares: ")
+print(board.has_valid_squares())

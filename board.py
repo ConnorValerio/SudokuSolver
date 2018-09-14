@@ -314,10 +314,28 @@ class Board():
         return True
 
     def has_valid_squares(self):
-        # to implement
+
+        # hack to get positions of top left cells
+        # in each square
+
+        # on the 0th, 27th, 54th positions, find the top corners
+        # of each square, get their neighbours, append themselves
+        # to the list, and check for duplicates
+
+        count = 0
+        while(count < 81):
+            if(count % 27 == 0):
+                for x in range(0, 7, 3):
+                    cell = self.cells[count + x]
+                    cells_to_check = cell.get_square_neighbours()
+                    cells_to_check.append(cell)
+                    if(self.has_duplicate_values(cells_to_check)):
+                        return False
+            count += 1
+
         return True
 
-    # checks if cells have unique values
+        # checks if cells have unique values
     def has_duplicate_values(self, cells_to_check):
 
         values_seen = []
