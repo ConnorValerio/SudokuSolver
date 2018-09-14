@@ -1,6 +1,7 @@
 __author__ = "Connor Valerio"
 
 from cell import Cell
+from stack import Stack
 import sys
 
 
@@ -30,6 +31,7 @@ class Board():
             # fail safe to prevent infinite loop
             if(self.handle_fail_safe()):
                 print("FAILSAFE: The Sudoku puzzle cannot be solved logically.")
+                self.brute_force()
                 sys.exit()
                 return
 
@@ -232,3 +234,122 @@ class Board():
             if(count % 27 == 0):
                 print("  ---------------------")
             count += 1
+
+    def brute_force(self):
+        print("Starting DFS Brute Force...")
+
+        root = self
+        stack = Stack()
+        stack.push(root)
+
+        while(not stack.isEmpty()):
+
+            # print("Stack size: {}".format(stack.size()))
+
+            current_board = stack.pop()
+            # current_board.printBoard()
+
+            # if the goal state has been found
+            if(current_board.is_complete_and_valid()):
+                print("complete")
+                current_board.printBoard()
+                return
+
+            next_states = current_board.get_next_states()
+            for board in next_states:
+                if(board.is_valid()):
+                    stack.push(board)
+
+        print("The stack is empty, a solution has not been found.")
+
+    def is_complete_and_valid(self):
+
+        # complete sudoku should have every cell filled
+        for cell in self.cells:
+            if(cell.get_val() == 0):
+                return False
+
+        # complete sudoku should have valid rows, columns and squares
+        if(not self.is_valid()):
+            return False
+
+        return True
+
+    # used to check if the rows, columns and squares follow sudoku constraints
+    def is_valid(self):
+        if(self.has_valid_rows() and self.has_valid_cols() and self.has_valid_squares()):
+            return True
+
+    def has_valid_rows(self):
+
+        for row in range(1, 10):
+
+            cells_to_check = []
+            for cell in self.cells:
+                if(cell.get_row() == row):
+                    cells_to_check.append(cell)
+
+            # check the row for duplicate values
+            if(self.has_duplicate_values(cells_to_check)):
+                return False
+
+        return True
+
+    def has_valid_cols(self):
+
+        for col in range(1, 10):
+
+            cells_to_check = []
+            for cell in self.cells:
+                if(cell.get_col() == col):
+                    cells_to_check.append(cell)
+
+            # check the column for duplicate values
+            if(self.has_duplicate_values(cells_to_check)):
+                return False
+
+        return True
+
+    def has_valid_squares(self):
+        # to implement
+        return True
+
+    # checks if cells have unique values
+    def has_duplicate_values(self, cells_to_check):
+
+        values_seen = []
+
+        for cell in cells_to_check:
+            val = cell.get_val()
+            if(val != 0):
+                if(val not in values_seen):
+                    values_seen.append(val)
+                else:
+                    return True
+        return False
+
+    def get_next_states(self):
+
+        # array of boards
+        next_states = []
+
+        for cell in self.cells:
+            if(cell.get_val() == 0):
+                for val in range(1, 10):
+                    next_states.append(self.clone_and_replace_x(cell, val))
+                break
+
+        return next_states
+
+    def clone_and_replace_x(self, cell, val):
+        row_pos = cell.get_row()
+        col_pos = cell.get_col()
+        cloned_cells = []
+
+        for c in self.cells:
+            if(c.get_row() == row_pos and c.get_col() == col_pos):
+                cloned_cells.append(Cell(row_pos, col_pos, val))
+            else:
+                cloned_cells.append(c.clone())
+
+        return Board(cloned_cells)

@@ -62,3 +62,11 @@ class Cell:
         if(self.row == cell.get_row() and self.col == cell.get_col()):
             return True
         return False
+
+    def clone(self):
+
+        row = self.row
+        col = self.col
+        val = self.val
+
+        return Cell(row, col, val)
