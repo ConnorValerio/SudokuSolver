@@ -69,4 +69,13 @@ class Cell:
         col = self.col
         val = self.val
 
-        return Cell(row, col, val)
+        row_neighbours = self.row_neighbours
+        col_neighbours = self.col_neighbours
+        square_neighbours = self.square_neighbours
+
+        cell = Cell(row, col, val)
+        cell.set_row_neighbours(row_neighbours)
+        cell.set_col_neighbours(col_neighbours)
+        cell.set_square_neighbours(square_neighbours)
+
+        return cell

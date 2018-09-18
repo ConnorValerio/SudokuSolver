@@ -20,6 +20,13 @@ class Board():
 
     def solve(self):
 
+        print("Attempting to solve the following sudoku...")
+        self.printBoard()
+
+        if(not self.is_valid()):
+            print("The board provided is not valid.")
+            return
+
         # find possible values for cells without a value
         for cell in self.cells:
             if(cell.get_val() == 0):
@@ -30,10 +37,11 @@ class Board():
 
             # fail safe to prevent infinite loop
             if(self.handle_fail_safe()):
-                print("FAILSAFE: The Sudoku puzzle cannot be solved using the implemented logic.")
-                print("Beginning Brute Force (Depth First Search)...")
+                print("\nfailsafe: The Sudoku puzzle cannot be solved using the implemented logic.")
+                print("After attempting to solve the board logically: ")
+                self.printBoard()
+                print("\nAttemting to Brute Force (Depth First Search)...")
                 self.brute_force()
-                sys.exit()
                 return
 
             for cell in self.cells:
@@ -48,6 +56,9 @@ class Board():
                 else:
                     # check all possible values
                     self.resolve_poss_vals(cell)
+
+        # print solved board
+        self.printBoard()
 
     def find_poss_vals(self, cell):
 
@@ -241,29 +252,24 @@ class Board():
 
     def brute_force(self):
 
-        root = self
         stack = Stack()
-        stack.push(root)
+        stack.push(self)
 
         while(not stack.isEmpty()):
 
-            print("Stack size: {}".format(stack.size()))
-
             current_board = stack.pop()
-            current_board.printBoard()
 
             # if the goal state has been found
             if(current_board.is_complete_and_valid()):
-                print("complete")
+                print("The solution has been found: ")
                 current_board.printBoard()
                 return
 
+            # get the next possible states for the board
             next_states = current_board.get_next_states()
             for board in next_states:
                 if(board.is_valid()):
                     stack.push(board)
-
-        print("The stack is empty, a solution has not been found.")
 
     def is_complete_and_valid(self):
 
@@ -282,6 +288,7 @@ class Board():
     def is_valid(self):
         if(self.has_valid_rows() and self.has_valid_cols() and self.has_valid_squares()):
             return True
+        return False
 
     def has_valid_rows(self):
 
@@ -327,7 +334,7 @@ class Board():
             if(count % 27 == 0):
                 for x in range(0, 7, 3):
                     cell = self.cells[count + x]
-                    cells_to_check = cell.get_square_neighbours()
+                    cells_to_check = cell.get_square_neighbours().copy()
                     cells_to_check.append(cell)
                     if(self.has_duplicate_values(cells_to_check)):
                         return False
