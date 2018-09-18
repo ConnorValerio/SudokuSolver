@@ -18,4 +18,4 @@ NOTE: The logic behind this algorithm will not be able to solve all sudoku puzzl
 
 The cell at position * obviously has to be a 4. However, the algorithm will only compare possible values with other cells in it's row, column or cell, and hence, if not enough information is available, the algorithm will be unable to deduce a value for a cell.
 
-Due to this restriction, a fail-safe has been implemented. If after 3 loops of the cells, the solve count has not been increased, the program will be terminated. 
+Due to this restriction, a fail-safe has been implemented. If after 3 loops of the cells, the solve count has not been increased, the program will resort to using depth-first search to try and brute force a solution.
