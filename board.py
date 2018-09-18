@@ -3,6 +3,7 @@ __author__ = "Connor Valerio"
 from cell import Cell
 from stack import Stack
 import sys
+import random
 
 
 class Board():
@@ -10,6 +11,8 @@ class Board():
     def __init__(self, cells):
         self.cells = cells
         self.solve_count = 0
+
+        # used by fail safe
         self.prev_solve_count = 0
         self.fail_safe_count = 0
 
@@ -23,6 +26,7 @@ class Board():
         print("Attempting to solve the following sudoku...")
         self.printBoard()
 
+        # checks there are no column, row, square violations
         if(not self.is_valid()):
             print("The board provided is not valid.")
             return
@@ -40,7 +44,7 @@ class Board():
                 print("\nfailsafe: The Sudoku puzzle cannot be solved using the implemented logic.")
                 print("After attempting to solve the board logically: ")
                 self.printBoard()
-                print("\nAttemting to Brute Force (Depth First Search)...")
+                print("\nAttempting to Brute Force (Depth First Search)...")
                 self.brute_force()
                 return
 
@@ -376,7 +380,11 @@ class Board():
                     selected_cell = cell
                     fewest_vals = len_poss_vals
 
-        for val in selected_cell.get_poss_vals().copy():
+        poss_val_list = selected_cell.get_poss_vals().copy()
+        # remove comment to shuffle the list.
+        # random.shuffle(poss_val_list)
+
+        for val in poss_val_list:
             next_states.append(self.clone_and_replace_x(selected_cell, val))
 
         return next_states
