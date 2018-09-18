@@ -24,9 +24,13 @@ class Cell:
 
     def set_val(self, val):
         self.val = val
+        self.clear_poss_vals()
 
     def get_poss_vals(self):
         return self.poss_vals
+
+    def clear_poss_vals(self):
+        self.poss_vals.clear()
 
     def add_poss_val(self, val):
         self.poss_vals.append(val)
@@ -63,6 +67,7 @@ class Cell:
             return True
         return False
 
+    # used by board.brute_force()
     def clone(self):
 
         row = self.row

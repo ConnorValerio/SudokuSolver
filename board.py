@@ -242,7 +242,10 @@ class Board():
             else:
                 end = " "
             # print cell value
-            print(cell.get_val(), end=end)
+            if(cell.get_val() != 0):
+                print(cell.get_val(), end=end)
+            else:
+                print(".", end=end)
             # handle row separation
             if(count % 9 == 0):
                 print("\n", end="")
@@ -258,10 +261,11 @@ class Board():
         while(not stack.isEmpty()):
 
             current_board = stack.pop()
+            # current_board.printBoard()
 
             # if the goal state has been found
             if(current_board.is_complete_and_valid()):
-                print("The solution has been found: ")
+                print("\nThe solution has been found: ")
                 current_board.printBoard()
                 return
 
@@ -361,11 +365,19 @@ class Board():
         # array of boards
         next_states = []
 
+        fewest_vals = None
+        selected_cell = None
+
+        # find the cell with the fewest possibilities
         for cell in self.cells:
             if(cell.get_val() == 0):
-                for val in range(1, 10):
-                    next_states.append(self.clone_and_replace_x(cell, val))
-                break
+                len_poss_vals = len(cell.get_poss_vals())
+                if(selected_cell is None or len_poss_vals < fewest_vals):
+                    selected_cell = cell
+                    fewest_vals = len_poss_vals
+
+        for val in selected_cell.get_poss_vals().copy():
+            next_states.append(self.clone_and_replace_x(selected_cell, val))
 
         return next_states
 
@@ -380,4 +392,10 @@ class Board():
             else:
                 cloned_cells.append(c.clone())
 
-        return Board(cloned_cells)
+        cloned_board = Board(cloned_cells)
+
+        # find new possible values based on the new board
+        for c in cloned_board.cells:
+            cloned_board.find_poss_vals(c)
+
+        return cloned_board
